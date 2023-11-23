@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace online_shop.Models
@@ -9,8 +10,14 @@ namespace online_shop.Models
 		public int Id { get; set; }
 
 		[Required]
+		[MaxLength(30)]
+		[MinLength(3, ErrorMessage ="Minimum length of 3")]
+		[DisplayName("Category Name")]
 		public string Name { get; set; }
-		public int DisplayOrder { get; set; }
+
+        [DisplayName("Display Order")]
+		[Range(1,100, ErrorMessage ="Order to be between 1 to 100")]
+        public int DisplayOrder { get; set; }
 	}
 }
 

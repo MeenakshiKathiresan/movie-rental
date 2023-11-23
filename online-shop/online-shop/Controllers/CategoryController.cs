@@ -19,6 +19,8 @@ namespace online_shop.Controllers
             _db = db;
         }
 
+        // Read/Get
+
 
         public IActionResult Index()
         {
@@ -30,6 +32,101 @@ namespace online_shop.Controllers
 
 
             return View(categoryList);
+        }
+
+        // Create
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(Category category)
+        {
+            if (category.DisplayOrder.ToString() == category.Name)
+            {
+                ModelState.AddModelError("Name", "The display order and name are same!");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Add(category);
+                _db.SaveChanges();
+                SetTempData("success", "add");
+                return RedirectToAction("Index", "Category");
+            }
+
+            return View();
+            
+        }
+
+        // Edit
+
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Category category = _db.Categories.Find(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Update(category);
+                _db.SaveChanges();
+                SetTempData("success", "edit");
+                return RedirectToAction("Index", "Category");
+            }
+
+            return View();
+
+        }
+
+        // Edit
+
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Category category = _db.Categories.Find(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeletePOST(int? id)
+        {
+            Category obj = _db.Categories.Find(id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            _db.Categories.Remove(obj);
+            _db.SaveChanges();
+            SetTempData("success", "delete");
+            return RedirectToAction("Index");
+
+        }
+
+        void SetTempData(string key, string action)
+        {
+            // example: tempdata[success] = "Category update success"
+            TempData[key] = $"Category {action} {key}";
         }
     }
 }
