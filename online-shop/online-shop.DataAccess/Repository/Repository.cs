@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using online_shop.Data;
-using online_shop.DataAccess.Repository.IRepository;
+using online_shop.DataAccess.Data;
 namespace online_shop.DataAccess.Repository
 {
 	public class Repository<T> : IRepository<T> where T : class

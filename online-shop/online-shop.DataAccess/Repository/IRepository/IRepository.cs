@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace online_shop.DataAccess.Repository.IRepository
+namespace online_shop.DataAccess.Repository
 {
 	public interface IRepository<T> where T:class
 	{

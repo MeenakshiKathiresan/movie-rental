@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using online_shop.Data;
+using online_shop.DataAccess.Data;
 using online_shop.Models;
-using online_shop.DataAccess.Repository.IRepository;
+using online_shop.DataAccess.Repository;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace online_shop.Controllers
+namespace online_shop.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
-        readonly ICategoryRepository _categoryRepo;
+        readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ICategoryRepository db)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _categoryRepo = db;
+            _unitOfWork = unitOfWork;
         }
 
         // Read/Get
@@ -25,8 +26,8 @@ namespace online_shop.Controllers
 
         public IActionResult Index()
         {
-            List<Category> categoryList = _categoryRepo.GetAll().ToList();
-            foreach(Category cat in _categoryRepo.GetAll())
+            List<Category> categoryList = _unitOfWork.Category.GetAll().ToList();
+            foreach(Category cat in _unitOfWork.Category.GetAll())
             {
                 Console.WriteLine($"c print category: !{cat.Name}  + {cat.DisplayOrder}");
             }
@@ -52,8 +53,8 @@ namespace online_shop.Controllers
 
             if (ModelState.IsValid)
             {
-                _categoryRepo.Add(category);
-                _categoryRepo.Save();
+                _unitOfWork.Category.Add(category);
+                _unitOfWork.Save();
                 SetTempData("success", "add");
                 return RedirectToAction("Index", "Category");
             }
@@ -70,7 +71,7 @@ namespace online_shop.Controllers
             {
                 return NotFound();
             }
-            Category category = _categoryRepo.GetFirst(u=>u.Id == id);
+            Category category = _unitOfWork.Category.GetFirst(u=>u.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -83,8 +84,8 @@ namespace online_shop.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryRepo.Update(category);
-                _categoryRepo.Save();
+                _unitOfWork.Category.Update(category);
+                _unitOfWork.Save();
                 SetTempData("success", "edit");
                 return RedirectToAction("Index", "Category");
             }
@@ -93,7 +94,7 @@ namespace online_shop.Controllers
 
         }
 
-        // Edit
+        // Delete
 
         public IActionResult Delete(int? id)
         {
@@ -101,7 +102,7 @@ namespace online_shop.Controllers
             {
                 return NotFound();
             }
-            Category category = _categoryRepo.GetFirst(u => u.Id == id);
+            Category category = _unitOfWork.Category.GetFirst(u => u.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -112,13 +113,13 @@ namespace online_shop.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Category obj = _categoryRepo.GetFirst(u => u.Id == id);
+            Category obj = _unitOfWork.Category.GetFirst(u => u.Id == id);
             if (obj == null)
             {
                 return NotFound();
             }
-            _categoryRepo.Remove(obj);
-            _categoryRepo.Save();
+            _unitOfWork.Category.Remove(obj);
+            _unitOfWork.Save();
             SetTempData("success", "delete");
             return RedirectToAction("Index");
 

@@ -1,8 +1,7 @@
 ﻿using System;
 using online_shop.Models;
 
-using online_shop.DataAccess.Repository.IRepository;
-using online_shop.Data;
+using online_shop.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace online_shop.DataAccess.Repository
@@ -17,14 +16,8 @@ namespace online_shop.DataAccess.Repository
             _db = db;
 		}
 
-        public void Save()
-        {
-            _db.SaveChanges();
-        }
-
         public void Update(Category category)
         {
-            Console.WriteLine("repo impl");
             _db.Categories.Update(category);
         }
     }
