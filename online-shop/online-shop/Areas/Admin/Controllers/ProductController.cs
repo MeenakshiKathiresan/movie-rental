@@ -66,7 +66,7 @@ namespace online_shop.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Add(product);
+                _unitOfWork.Product.Update(product);
                 _unitOfWork.Save();
                 return RedirectToAction("Index", "Product");
             }
